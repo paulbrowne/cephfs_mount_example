@@ -1,0 +1,7 @@
+---
+
+share_name: pfb29-test
+share_user: pfb29_test
+
+euclid_application_credential_id: "db89dd01e1f84043abe6445ea191555b"
+euclid_application_credential_secret: "{{ secrets_euclid_application_credential_secret }}"

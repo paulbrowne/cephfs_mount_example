@@ -1,0 +1,5 @@
+---
+
+roles:
+  - stackhpc.os-manila-mount
+  - stackhpc.os-config

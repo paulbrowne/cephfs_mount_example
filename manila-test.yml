@@ -1,0 +1,43 @@
+---
+- hosts: test
+  vars:
+    ansible_user: root
+    cloud_config: |
+      ---
+      clouds:
+        euclid:
+          auth:
+            auth_url: https://arcus.openstack.hpc.cam.ac.uk:5000/v3
+            application_credential_id: "{{ euclid_application_credential_id }}"
+            application_credential_secret: "{{ euclid_application_credential_secret }}"
+          region: RegionOne
+          interface: "public"
+          identity_api_version: 3
+  roles:
+    - { role: stackhpc.os-config,
+        os_config_content: "{{ cloud_config }}" }
+    - { role: stackhpc.os-manila-mount,
+        os_manila_mount_action: "lookup",
+        os_manila_mount_os_config_name: "euclid",
+        os_manila_mount_share_name: "{{ share_name }}",
+        os_manila_mount_share_user: "{{ share_user }}" }
+
+- hosts: test
+  tasks:
+    - name: "Ansible | List all known variables and facts"
+      debug:
+        var: hostvars[inventory_hostname]
+
+- hosts: test
+  roles:
+    - role: stackhpc.os-manila-mount
+      os_manila_mount_action: "mount"
+      os_manila_mount_host: "{{ hostvars[inventory_hostname]['os_manila_mount_host'] }}"
+      os_manila_mount_access_key: "{{ hostvars[inventory_hostname]['os_manila_mount_access_key'] }}"
+      os_manila_mount_export: "{{ hostvars[inventory_hostname]['os_manila_mount_export'] }}"
+      os_manila_mount_share_user: "{{ share_user }}"
+      os_manila_mount_pkgs_install: true
+      os_manila_mount_path: "/mnt/"
+      os_manila_mount_user: "root"
+      os_manila_mount_group: "root"
+      os_manila_mount_fuse: true
